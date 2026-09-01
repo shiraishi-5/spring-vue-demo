@@ -1,0 +1,19 @@
+# Vue
+frontend/spring-vue-prac-project/node_modules/
+frontend/spring-vue-prac-project/dist/
+
+# Spring Boot
+backend/demo/.gradle/
+backend/demo/build/
+
+# Eclipse
+backend/demo/.classpath
+backend/demo/.project
+backend/demo/.settings/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
