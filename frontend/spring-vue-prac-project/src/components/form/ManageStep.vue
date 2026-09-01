@@ -10,6 +10,8 @@ const props = defineProps({
   options: Array,
 })
 
+const emit = defineEmits(['add-qualification', 'remove-qualification'])
+
 const currentStep = ref(1)
 
 const steps = [
@@ -30,6 +32,16 @@ const steps = [
 const changeStep = (stepNum) => {
   currentStep.value = stepNum
 }
+
+//さらに親に渡す　追加
+const eventAddQualification = (qualification) => {
+  emit('add-qualification', qualification)
+}
+
+//さらに親に渡す 削除
+const eventRemoveQualification = (id) => {
+  emit('remove-qualification', id)
+}
 </script>
 
 <template>
@@ -47,7 +59,13 @@ const changeStep = (stepNum) => {
 
     <Step1 v-if="currentStep === 1" :form="form" :errors="errors"></Step1>
     <Step2 v-if="currentStep === 2" :form="form" :errors="errors"></Step2>
-    <Step3 v-if="currentStep === 3" :form="form" :options="options"></Step3>
+    <Step3
+      v-if="currentStep === 3"
+      :form="form"
+      :options="options"
+      @add-qualification="eventAddQualification"
+      @remove-qualification="eventRemoveQualification"
+    ></Step3>
   </div>
 </template>
 

@@ -6,12 +6,13 @@ import BaseSelect from '../parts/BaseSelect.vue'
 import FormField from '../parts/FormField.vue'
 import BaseStep from './BaseStep.vue'
 import Error from '../parts/Error.vue'
-import { getQualMasterApi } from '@/api/api.js'
 
 const props = defineProps({
   form: Object,
   options: Array,
 })
+
+const emit = defineEmits(['add-qualification', 'remove-qualification'])
 
 const qualForm = reactive({
   id: '',
@@ -32,14 +33,14 @@ const addQualification = () => {
   )
 
   if (exists) {
-    error.value = '既に登録されている資格です'
+    error.value = '既に追加している資格です'
     return
   }
 
   //optionsから自分のidと同じoptionを取得する
   const option = props.options.find((item) => item.value == qualForm.id)
 
-  props.form.qualifications.push({
+  emit('add-qualification', {
     qualificationId: qualForm.id,
     name: option?.label,
     acquisitionDate: qualForm.date,
@@ -47,12 +48,6 @@ const addQualification = () => {
 
   qualForm.id = ''
   qualForm.date = ''
-}
-
-const removeQualification = (id) => {
-  props.form.qualifications = props.form.qualifications.filter(
-    (qualification) => qualification.qualificationId !== id,
-  )
 }
 
 const validate = () => {
@@ -81,7 +76,7 @@ const validate = () => {
         {{ qualification.name }} ({{ qualification.acquisitionDate }})
         <BaseButton
           text="X"
-          @click="removeQualification(qualification.qualificationId)"
+          @click="emit('remove-qualification', qualification.qualificationId)"
         ></BaseButton>
       </div>
     </div>

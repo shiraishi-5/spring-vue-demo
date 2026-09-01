@@ -124,6 +124,18 @@ const getMaster = async () => {
   }
 }
 
+//資格情報追加
+const addQualification = (qualification) => {
+  form.qualifications.push(qualification)
+}
+
+//資格情報削除
+const removeQualification = (id) => {
+  form.qualifications = form.qualifications.filter(
+    (qualification) => qualification.qualificationId !== id,
+  )
+}
+
 //テスト用
 const printCon = () => {
   console.log(form.password)
@@ -138,7 +150,13 @@ const printValues = () => {
   <PageTitle title="ユーザー登録"></PageTitle>
 
   <div id="create-user">
-    <ManageStep :form="form" :errors="errors" :options="options"></ManageStep>
+    <ManageStep
+      :form="form"
+      :errors="errors"
+      :options="options"
+      @add-qualification="addQualification"
+      @remove-qualification="removeQualification"
+    ></ManageStep>
     <BaseButton text="登録" @click="postUser"></BaseButton>
   </div>
 </template>
