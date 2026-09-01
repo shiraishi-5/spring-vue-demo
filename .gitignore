@@ -4,6 +4,8 @@ frontend/spring-vue-prac-project/dist/
 
 # Spring Boot
 backend/demo/.gradle/
+backend/demo/.metadata/
+backend/demo/Servers
 backend/demo/build/
 
 # Eclipse
