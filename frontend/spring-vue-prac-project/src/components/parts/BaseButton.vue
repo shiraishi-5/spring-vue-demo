@@ -8,17 +8,20 @@ const props = defineProps({
     type: String,
     default: 'button',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
 <template>
-  <button :type="type">{{ text }}</button>
+  <button :type="type" :disabled="disabled">{{ text }}</button>
 </template>
 
 <style scoped>
 button {
   padding: 8px;
-  margin-top: 8px;
 
   font-weight: bold;
 
@@ -32,5 +35,9 @@ button {
 button:hover {
   background-color: rgb(0, 141, 217);
   transition: 0.3s;
+}
+
+button:disabled {
+  background-color: gray;
 }
 </style>

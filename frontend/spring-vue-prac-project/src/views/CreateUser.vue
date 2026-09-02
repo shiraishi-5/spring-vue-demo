@@ -8,7 +8,7 @@ import { createUserApi, getQualMasterApi } from '@/api/api.js'
 const MAX_LENGTH_NAME = 20
 const MIN_LENGTH_PASSWORD = 8
 
-const form = reactive({
+const initialForm = {
   name: '',
   email: '',
   password: '',
@@ -17,7 +17,9 @@ const form = reactive({
     birthday: '',
   },
   qualifications: [],
-})
+}
+
+const form = reactive({ ...initialForm })
 
 const initialErrors = {
   name: '',
@@ -98,6 +100,7 @@ const postUser = async () => {
     if (!isValid()) return
     console.log(JSON.stringify(form))
     await createUserApi(form)
+    resetForm()
     console.log('追加しました')
   } catch (error) {
     if (error.response?.status === 400) {
@@ -136,6 +139,11 @@ const removeQualification = (id) => {
   )
 }
 
+//フォーム初期化用
+const resetForm = () => {
+  Object.assign(form, initialForm)
+}
+
 //テスト用
 const printCon = () => {
   console.log(form.password)
@@ -157,7 +165,9 @@ const printValues = () => {
       @add-qualification="addQualification"
       @remove-qualification="removeQualification"
     ></ManageStep>
-    <BaseButton text="登録" @click="postUser"></BaseButton>
+    <div class="btn-area">
+      <BaseButton text="登録" @click="postUser"></BaseButton>
+    </div>
   </div>
 </template>
 
@@ -168,5 +178,8 @@ const printValues = () => {
 
   justify-content: center;
   align-items: center;
+}
+.btn-area {
+  margin-top: 16px;
 }
 </style>

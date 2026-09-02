@@ -1,4 +1,6 @@
 import CreateUser from '@/views/CreateUser.vue'
+import Index from '@/views/Index.vue'
+import ShowUser from '@/views/ShowUser.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -7,6 +9,15 @@ const router = createRouter({
     {
       path: '/user/create',
       component: CreateUser,
+    },
+    {
+      path: '/users',
+      component: Index,
+    },
+    {
+      path: '/users/:id',
+      name: 'ShowUser',
+      component: ShowUser,
     },
   ],
 })
