@@ -4,7 +4,16 @@ import Header from './components/parts/Header.vue'
 
 <template>
   <Header></Header>
-  <router-view></router-view>
+  <main>
+    <router-view></router-view>
+  </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 16px;
+}
+</style>

@@ -34,6 +34,10 @@ tbody {
   background: #f5f5f5;
 }
 
+tbody :deep(tr:hover) {
+  background-color: #ededed;
+}
+
 .base-table :deep(td) {
   padding: 12px 16px;
 }

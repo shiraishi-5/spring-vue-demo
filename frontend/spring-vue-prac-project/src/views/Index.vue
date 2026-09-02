@@ -7,6 +7,9 @@ import PageTitle from '@/components/parts/PageTitle.vue'
 import Pagination from '@/components/parts/Pagination.vue'
 import { printLog } from '@/utils/debug'
 import { onMounted, reactive, ref } from 'vue'
+import { useUserSearchStore } from '@/stores/userSearch'
+
+const searchStore = useUserSearchStore()
 
 const users = ref([])
 const pageInfo = reactive({
@@ -17,7 +20,7 @@ const pageInfo = reactive({
 const keyword = ref('')
 
 onMounted(async () => {
-  setUsers()
+  setUsers(searchStore.page, searchStore.keyword)
 })
 
 const setUsers = async (page = 0, keyword = '') => {
@@ -35,7 +38,19 @@ const setUsers = async (page = 0, keyword = '') => {
 
 //ページ変更
 const changePage = async (page) => {
+  searchStore.page = page
   await setUsers(page, keyword.value)
+}
+
+const search = async () => {
+  searchStore.page = 0
+  await setUsers(searchStore.page, searchStore.keyword)
+}
+
+const resetSearchStore = async () => {
+  searchStore.keyword = ''
+  searchStore.page = 0
+  await setUsers(0, '')
 }
 </script>
 
@@ -46,9 +61,10 @@ const changePage = async (page) => {
       <h4>検索欄</h4>
       <BaseInput
         placeholder="ユーザー名またはメールアドレスを入力して下さい"
-        v-model="keyword"
+        v-model="searchStore.keyword"
       ></BaseInput>
-      <BaseButton text="検索" @click="setUsers(0, keyword)"></BaseButton>
+      <BaseButton text="検索" @click="search"></BaseButton>
+      <BaseButton text="リセット" @click="resetSearchStore"></BaseButton>
     </div>
 
     <BaseTable>
