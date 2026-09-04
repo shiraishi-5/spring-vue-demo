@@ -12,7 +12,7 @@ export const getUsersApi = ({
   qualificationIds,
   filterType,
 }) => {
-  return api.get('/users/test', {
+  return api.get('/users', {
     params: {
       page,
       size,
