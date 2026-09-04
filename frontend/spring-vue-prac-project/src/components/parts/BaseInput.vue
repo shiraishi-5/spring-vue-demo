@@ -19,6 +19,11 @@ defineProps({
     type: String,
     default: '',
   },
+
+  size: {
+    type: String,
+    default: 'medium',
+  },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -34,17 +39,32 @@ const onInput = (event) => {
     :type="type"
     :value="modelValue"
     :placeholder="placeholder"
-    class="base-input"
+    :class="['base-input', `base-input--${size}`]"
     @input="onInput"
   />
 </template>
 
 <style scoped>
 .base-input {
-  width: 200px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.base-input--min {
+  width: 50px;
+}
+
+.base-input--small {
+  width: 100px;
+}
+
+.base-input--medium {
+  width: 200px;
+}
+
+.base-input--large {
+  width: 300px;
 }
 
 .base-input:focus {

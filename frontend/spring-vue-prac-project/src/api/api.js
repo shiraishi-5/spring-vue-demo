@@ -4,13 +4,22 @@ const api = axios.create({
   baseURL: 'http://localhost:8080/api',
 })
 
-export const getUsersApi = ({ page = 0, size = 5, sort = 'id', keyword = '' }) => {
-  return api.get('/users', {
+export const getUsersApi = ({
+  page = 0,
+  size = 5,
+  sort = 'id',
+  keyword = '',
+  qualificationIds,
+  filterType,
+}) => {
+  return api.get('/users/test', {
     params: {
       page,
       size,
       sort,
       keyword,
+      qualificationIds,
+      filterType,
     },
   })
 }

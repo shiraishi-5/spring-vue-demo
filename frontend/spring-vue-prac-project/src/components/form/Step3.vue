@@ -6,6 +6,7 @@ import BaseSelect from '../parts/BaseSelect.vue'
 import FormField from '../parts/FormField.vue'
 import BaseStep from './BaseStep.vue'
 import Error from '../parts/Error.vue'
+import BaseTable from '../parts/BaseTable.vue'
 
 const props = defineProps({
   form: Object,
@@ -42,7 +43,7 @@ const addQualification = () => {
 
   emit('add-qualification', {
     qualificationId: qualForm.id,
-    name: option?.label,
+    qualificationName: option?.label,
     acquisitionDate: qualForm.date,
   })
 
@@ -67,18 +68,45 @@ const validate = () => {
 
     <Error :error="error"></Error>
 
-    <BaseButton text="追加" @click="addQualification"></BaseButton>
+    <BaseButton text="追加" priority="tertiary" @click="addQualification"></BaseButton>
 
     <div v-if="props.form.qualifications.length >= 1" id="show-qualifications-area">
       <h4>資格一覧</h4>
 
-      <div v-for="qualification in props.form.qualifications" :key="qualification.qualificationId">
-        {{ qualification.name }} ({{ qualification.acquisitionDate }})
+      <BaseTable>
+        <template #head>
+          <tr>
+            <th>資格名</th>
+            <th>取得日</th>
+            <th>削除</th>
+          </tr>
+        </template>
+
+        <template #body>
+          <tr
+            v-for="qualification in props.form.qualifications"
+            :key="qualification.qualificationId"
+          >
+            <td>{{ qualification.qualificationName }}</td>
+            <td>{{ qualification.acquisitionDate }}</td>
+            <td>
+              <BaseButton
+                text="X"
+                priority="secondary"
+                @click="emit('remove-qualification', qualification.qualificationId)"
+              ></BaseButton>
+            </td>
+          </tr>
+        </template>
+      </BaseTable>
+      <!-- <div v-for="qualification in props.form.qualifications" :key="qualification.qualificationId">
+        {{ qualification.qualificationName }} ({{ qualification.acquisitionDate }})
         <BaseButton
           text="X"
+          priority="secondary"
           @click="emit('remove-qualification', qualification.qualificationId)"
         ></BaseButton>
-      </div>
+      </div> -->
     </div>
   </BaseStep>
 </template>
@@ -86,6 +114,11 @@ const validate = () => {
 <style scoped>
 #show-qualifications-area {
   margin-top: 16px;
+  padding: 8px;
+
+  background-color: rgb(210, 210, 210);
+
+  border-radius: 8px;
 }
 
 h4 {
