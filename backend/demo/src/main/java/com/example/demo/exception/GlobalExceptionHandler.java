@@ -48,8 +48,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUserDuplicateError(
             DuplicateException ex) {
         ApiErrorsResponse<Map<String, String>> res = new ApiErrorsResponse<>(
-                "APIエラーがあります",
-                Map.of("email", ex.getMessage()));
+                ex.getMessage(),
+                Map.of());
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)

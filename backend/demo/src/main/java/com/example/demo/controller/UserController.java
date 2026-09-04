@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Pageable;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ApiPageResponse;
 import com.example.demo.dto.ApiResponse;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserResponse;
 import com.example.demo.dto.UserUpdateRequest;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
     //登録
     @PostMapping
@@ -38,7 +43,8 @@ public class UserController {
 
     //更新
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> update(@Valid @RequestBody UserUpdateRequest userUpdateRequest, @PathVariable int id) {
+    public ResponseEntity<ApiResponse<UserResponse>> update(@Valid @RequestBody UserUpdateRequest userUpdateRequest,
+            @PathVariable int id) {
         ApiResponse<UserResponse> res = userService.update(id, userUpdateRequest);
 
         return ResponseEntity.ok(res);
@@ -51,7 +57,7 @@ public class UserController {
 
         return ResponseEntity.ok(res);
     }
-    
+
     //単ユーザー取得
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> show(@PathVariable int id) {
@@ -59,24 +65,14 @@ public class UserController {
 
         return ResponseEntity.ok(res);
     }
-    
-    //全ユーザー取得
-    @GetMapping
-    public ResponseEntity<ApiResponse<UserResponse>> index(Pageable pageable) {
-        ApiResponse<UserResponse> reses = userService.index(pageable);
 
-        return ResponseEntity.ok(reses);
-    }
-    
-//    @GetMapping
-//    public Page<User> findAll(Pageable pageable) {
-//        return userRepository.findAll(pageable);
-//    }
-    
-    //検索条件合致ユーザー取得
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<UserResponse>> search(@RequestParam String name) {
-        ApiResponse<UserResponse> reses = userService.search(name);
+    @GetMapping
+    public ResponseEntity<ApiPageResponse<UserResponse>> index(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) List<Integer> qualificationIds,
+            @RequestParam(required = false) String filterType,
+            Pageable pageable) {
+        ApiPageResponse<UserResponse> reses = userService.index(keyword, qualificationIds, filterType, pageable);
 
         return ResponseEntity.ok(reses);
     }

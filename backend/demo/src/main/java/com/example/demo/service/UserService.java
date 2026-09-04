@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.ApiPageResponse;
 import com.example.demo.dto.ApiResponse;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserResponse;
@@ -19,6 +20,7 @@ import com.example.demo.entity.User;
 import com.example.demo.entity.UserQualification;
 import com.example.demo.exception.DuplicateException;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.mapper.PageInfoMapper;
 import com.example.demo.mapper.ProfileMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.repository.UserRepository;
@@ -53,6 +55,10 @@ public class UserService {
         //資格セット
         List<UserQualification> qualList = qualificationService.makeUserQualificationList(user,
                 req.getQualifications());
+
+        //重複確認
+//        qualificationService.isDuplicate(user, qualList);
+
         user.setUserQualifications(qualList);
 
         //データベースに保存
@@ -124,25 +130,19 @@ public class UserService {
                 List.of(userRes));
     }
 
-    //全ユーザー取得
-    public ApiResponse<UserResponse> index(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
+    //検索　（名前、メール、ニックネーム部分一致、絞り込み）
+    public ApiPageResponse<UserResponse> index(String keyword, List<Integer> qualificationIds, String filterType,
+            Pageable pageable) {
+        Page<User> searchedUsers = null;
 
-        ArrayList<UserResponse> userResList = new ArrayList<>();
-
-        for (User user : users) {
-            UserResponse userResponse = makeUserResponse(user);
-            userResList.add(userResponse);
+        if ("all".equals(filterType) && qualificationIds != null) {
+            searchedUsers = userRepository.findHavingAllQualifications(keyword, qualificationIds,
+                    qualificationIds.size(), pageable);
+        } else if ("any".equals(filterType) && qualificationIds != null) {
+            searchedUsers = userRepository.findHaveAnyQualifications(keyword, qualificationIds, pageable);
+        } else {
+            searchedUsers = userRepository.search(keyword, pageable);
         }
-
-        return new ApiResponse<>(
-                "全ユーザー取得完了しました",
-                userResList);
-    }
-
-    //検索　（名前部分一致）
-    public ApiResponse<UserResponse> search(String name) {
-        List<User> searchedUsers = userRepository.findByNameContaining(name);
 
         ArrayList<UserResponse> userResList = new ArrayList<>();
 
@@ -151,9 +151,10 @@ public class UserService {
             userResList.add(userResponse);
         }
 
-        return new ApiResponse<>(
+        return new ApiPageResponse<>(
                 "検索条件に合うユーザーの取得完了しました",
-                userResList);
+                userResList,
+                PageInfoMapper.toResponse(searchedUsers));
     }
 
     /* ====================

@@ -13,9 +13,11 @@ import com.example.demo.dto.qualification.QualificationResponse;
 import com.example.demo.entity.QualificationMaster;
 import com.example.demo.entity.User;
 import com.example.demo.entity.UserQualification;
+import com.example.demo.exception.DuplicateException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.mapper.QualificationMapper;
 import com.example.demo.repository.QualificationMasterRepository;
+import com.example.demo.repository.UserQualificationRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QualificationService {
     public final QualificationMasterRepository qualificationMasterRepository;
+    public final UserQualificationRepository userQualificationRepository;
 
     //資格マスタをマップで取得
     private Map<Integer, QualificationMaster> getMasters(List<QualificationRequest> req) {
@@ -80,8 +83,31 @@ public class QualificationService {
                 .map(qual -> QualificationMapper.entityToResponse(qual))
                 .toList();
     }
-    
+
+    //すべてのマスタを取得する
     public List<QualificationMaster> getMasters() {
         return qualificationMasterRepository.findAll();
+    }
+
+    public void isDuplicate(User user, List<UserQualification> userQualList) {
+        if (userQualList == null || userQualList.isEmpty()) {
+            return;
+        }
+        
+        //idリスト作成
+        List<Integer> ids = userQualList.stream()
+                .map(qual -> qual.getId())
+                .toList();
+        
+        List<Integer> duplicateIds =
+                userQualificationRepository.findDuplicateQualificationIds(
+                        user.getId(),
+                        ids);
+
+        if (!duplicateIds.isEmpty()) {
+            throw new DuplicateException(
+                    "既に登録済みの資格があります"
+            );
+        }
     }
 }
