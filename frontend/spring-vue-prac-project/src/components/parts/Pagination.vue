@@ -15,6 +15,7 @@ const emit = defineEmits(['changePage'])
       v-for="page in totalPages"
       :key="page"
       :text="String(page)"
+      size="small"
       @click="emit('changePage', page - 1)"
       :disabled="currentPage == page - 1"
     ></BaseButton>

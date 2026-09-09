@@ -16,11 +16,19 @@ const props = defineProps({
     type: String,
     default: 'primary',
   },
+  size: {
+    type: String,
+    default: 'medium',
+  },
 })
 </script>
 
 <template>
-  <button :type="type" :disabled="disabled" :class="['base-button', `base-button--${priority}`]">
+  <button
+    :type="type"
+    :disabled="disabled"
+    :class="['base-button', `base-button--${priority}`, `base-button--${size}`]"
+  >
     {{ text }}
   </button>
 </template>
@@ -71,5 +79,21 @@ button:disabled {
 
 button:disabled:hover {
   background-color: gray;
+}
+
+.base-button--small {
+  width: 25px;
+}
+
+.base-button--medium {
+  width: 50px;
+}
+
+.base-button--large {
+  width: 100px;
+}
+
+.base-button--xl {
+  width: 200px;
 }
 </style>

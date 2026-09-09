@@ -68,10 +68,12 @@ const validate = () => {
 
     <Error :error="error"></Error>
 
-    <BaseButton text="追加" priority="tertiary" @click="addQualification"></BaseButton>
+    <div class="btn-area">
+      <BaseButton text="追加" priority="tertiary" @click="addQualification"></BaseButton>
+    </div>
 
     <div v-if="props.form.qualifications.length >= 1" id="show-qualifications-area">
-      <h4>資格一覧</h4>
+      <h4>取得資格一覧</h4>
 
       <BaseTable>
         <template #head>
@@ -93,32 +95,35 @@ const validate = () => {
               <BaseButton
                 text="X"
                 priority="secondary"
+                size="small"
                 @click="emit('remove-qualification', qualification.qualificationId)"
               ></BaseButton>
             </td>
           </tr>
         </template>
       </BaseTable>
-      <!-- <div v-for="qualification in props.form.qualifications" :key="qualification.qualificationId">
-        {{ qualification.qualificationName }} ({{ qualification.acquisitionDate }})
-        <BaseButton
-          text="X"
-          priority="secondary"
-          @click="emit('remove-qualification', qualification.qualificationId)"
-        ></BaseButton>
-      </div> -->
     </div>
   </BaseStep>
 </template>
 
 <style scoped>
 #show-qualifications-area {
-  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 8px;
   padding: 8px;
+}
 
-  background-color: rgb(210, 210, 210);
+#show-qualifications-area h4 {
+  margin-bottom: 8px;
+}
 
-  border-radius: 8px;
+.btn-area {
+  display: flex;
+  justify-content: right;
 }
 
 h4 {

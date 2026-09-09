@@ -9,7 +9,7 @@ import { RouterLink } from 'vue-router'
     </div>
     <div class="link">
       <RouterLink to="/users">ユーザー一覧</RouterLink>
-      <RouterLink to="/user/create">ユーザー登録</RouterLink>
+      <RouterLink to="/users/create">ユーザー登録</RouterLink>
     </div>
   </div>
 </template>

@@ -8,9 +8,13 @@ import Pagination from '@/components/parts/Pagination.vue'
 import { printLog } from '@/utils/debug'
 import { onMounted, reactive, ref, computed } from 'vue'
 import { useUserSearchStore } from '@/stores/userSearch'
-import FormField from '@/components/parts/FormField.vue'
 import Error from '@/components/parts/Error.vue'
 import { useRouter } from 'vue-router'
+
+const FILTER_TYPE = {
+  ALL: 'all',
+  ANY: 'any',
+}
 
 const searchStore = useUserSearchStore()
 const router = useRouter()
@@ -126,7 +130,12 @@ const goEdit = (id) => {
         v-model="searchStore.keyword"
       ></BaseInput>
       <BaseButton text="検索" :disabled="hasFilterError" @click="search"></BaseButton>
-      <BaseButton text="リセット" priority="secondary" @click="resetSearchStore"></BaseButton>
+      <BaseButton
+        text="リセット"
+        priority="secondary"
+        size="large"
+        @click="resetSearchStore"
+      ></BaseButton>
     </div>
 
     <div id="filter-area">
@@ -144,12 +153,12 @@ const goEdit = (id) => {
           <p>方法</p>
 
           <label>
-            <input type="radio" value="all" v-model="searchStore.filterType" />
+            <input type="radio" :value="FILTER_TYPE.ALL" v-model="searchStore.filterType" />
             ALL検索
           </label>
 
           <label>
-            <input type="radio" value="any" v-model="searchStore.filterType" />
+            <input type="radio" :value="FILTER_TYPE.ANY" v-model="searchStore.filterType" />
             ANY検索
           </label>
         </div>

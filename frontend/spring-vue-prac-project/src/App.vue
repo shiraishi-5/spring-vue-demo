@@ -1,5 +1,13 @@
 <script setup>
+import { onMounted } from 'vue'
 import Header from './components/parts/Header.vue'
+import { useAuthStore } from './stores/auth.js'
+
+const authStore = useAuthStore()
+
+onMounted(async () => {
+  await authStore.fetchMe()
+})
 </script>
 
 <template>

@@ -4,11 +4,14 @@ import BaseButton from '@/components/parts/BaseButton.vue'
 import PageTitle from '@/components/parts/PageTitle.vue'
 import { onMounted, reactive, ref } from 'vue'
 import { createUserApi, getQualMasterApi } from '@/api/api.js'
+import BaseModal from '@/components/parts/BaseModal.vue'
 
 const MAX_LENGTH_NAME = 20
 const MIN_LENGTH_PASSWORD = 8
 
-const initialForm = {
+const isShowModal = ref(false)
+
+const createInitialForm = () => ({
   name: '',
   email: '',
   password: '',
@@ -17,9 +20,9 @@ const initialForm = {
     birthday: '',
   },
   qualifications: [],
-}
+})
 
-const form = reactive({ ...initialForm })
+const form = reactive(createInitialForm())
 
 const initialErrors = {
   name: '',
@@ -98,10 +101,9 @@ const resetErrors = () => {
 const postUser = async () => {
   try {
     if (!isValid()) return
-    console.log(JSON.stringify(form))
     await createUserApi(form)
+    isShowModal.value = true
     resetForm()
-    console.log('追加しました')
   } catch (error) {
     if (error.response?.status === 400) {
       const apiValidateErrors = error.response?.data?.errors
@@ -141,23 +143,17 @@ const removeQualification = (id) => {
 
 //フォーム初期化用
 const resetForm = () => {
-  Object.assign(form, initialForm)
+  Object.assign(form, createInitialForm())
 }
 
-//テスト用
-const printCon = () => {
-  console.log(form.password)
-}
-const printValues = () => {
-  console.log(isValid())
-  console.log({ ...form })
+const closeModal = () => {
+  isShowModal.value = false
 }
 </script>
 
 <template>
-  <PageTitle title="ユーザー登録"></PageTitle>
-
   <div id="create-user">
+    <PageTitle title="ユーザー登録"></PageTitle>
     <ManageStep
       :form="form"
       :errors="errors"
@@ -166,9 +162,14 @@ const printValues = () => {
       @remove-qualification="removeQualification"
     ></ManageStep>
     <div class="btn-area">
-      <BaseButton text="登録" @click="postUser"></BaseButton>
+      <BaseButton text="登録" size="xl" @click="postUser"></BaseButton>
     </div>
   </div>
+
+  <BaseModal :is-show="isShowModal" @close="closeModal">
+    <h3>INFORMATION</h3>
+    <p>登録しました</p>
+  </BaseModal>
 </template>
 
 <style scoped>
